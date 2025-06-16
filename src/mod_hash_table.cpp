@@ -1,7 +1,6 @@
 #include "mod_hash_table.hpp"
 #include <functional>
 
-
 ModHashTable::ModHashTable(int pow2)
 {
     tableSize = 1 << pow2;
