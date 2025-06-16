@@ -1,35 +1,37 @@
 #include <iostream>
-#include "../include/fibo_hash_table.hpp"
-#include "../include/mod_hash_table.hpp"
-#include "../include/utils.hpp"
-
+#include "fibo_hash_table.hpp"
+#include "mod_hash_table.hpp"
+#include "utils.hpp"
 using namespace std;
 
-void benchmark(HashTableBase& table, const std::vector<std::string>& keys, const std::string& label) 
+void benchmark(HashTableBase& table, const vector<string>& keys, const string& label) 
 {
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now();
     for (size_t i = 0; i < keys.size(); ++i) 
     {
         table.insert(keys[i], static_cast<int>(i));
     }
+    
+    cout << "=== Benchmark: " << label << " ===\n";
+    cout << "Load factor: " << table.getLoadFactor() << '\n';
+    cout << "Avg chain length: " << table.getAverageChainLength() << '\n';
+    cout << "Max chain length: " << table.getMaxChainLength() << "\n";
+    
     for (const auto& key : keys) 
     {
         int val;
         table.get(key, val);
     }
+    
     for (const auto& key : keys) 
     {
         table.remove(key);
     }
-    auto end = std::chrono::high_resolution_clock::now();
+    auto end = chrono::high_resolution_clock::now();
+    
+    double time_ms = chrono::duration<double, milli>(end - start).count();
+    cout << "Execution time: " << time_ms << " ms\n\n";
 
-    double time_ms = std::chrono::duration<double, std::milli>(end - start).count();
-
-    cout << "=== Benchmark: " << label << " ===\n";
-    cout << "Execution time: " << time_ms << " ms\n";
-    cout << "Load factor: " << table.getLoadFactor() << '\n';
-    cout << "Avg chain length: " << table.getAverageChainLength() << '\n';
-    cout << "Max chain length: " << table.getMaxChainLength() << "\n\n";
 }
 
 int main() 
