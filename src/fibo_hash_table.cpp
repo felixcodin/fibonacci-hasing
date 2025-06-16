@@ -11,7 +11,7 @@ FiboHashTable::FiboHashTable(int pow2)
 unsigned int FiboHashTable::hash(const string &key) const
 {
     std::hash<string> hasher;
-    return (hasher(key) * 2654435769u) >> shift;
+    return ((hasher(key) * 2654435769u) >> shift) & (tableSize - 1);
 }
 
 void FiboHashTable::insert(const string &key, int value)
@@ -55,18 +55,30 @@ void FiboHashTable::remove(const string &key)
     numElements -= (before - bucket.size());
 }
 
+int countTrailingZeros(unsigned int n)
+{
+    if (n == 0) return 32;
+    int count = 0;
+    while ((n & 1) == 0)
+    {
+        n >>= 1;
+        count++;
+    }
+    return count;
+}
+
 void FiboHashTable::rehash()
 {
     int oldTableSize = tableSize;
     tableSize *= 2;
-    shift = 32 - __builtin_ctz(tableSize);
+    shift = 32 - countTrailingZeros(tableSize);
     vector<list<pair<string, int>>> newTable(tableSize);
 
     for (const auto &bucket : table)
     {
         for (const auto &p : bucket)
         {
-            unsigned int newIndex = (std::hash<string>{}(p.first) * 2654435769u) >> shift;
+            unsigned int newIndex = ((std::hash<string>{}(p.first) * 2654435769u) >> shift) & (tableSize - 1);
             newTable[newIndex].push_back(p);
         }
     }
