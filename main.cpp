@@ -36,8 +36,17 @@ void benchmark(HashTableBase& table, const vector<string>& keys, const string& l
 
 int main() 
 {
-    const int count = 5000;
-    const int tablePower = 10;
+    int count;
+    int tablePower;
+
+    // const int count = 5000;
+    // const int tablePower = 10;
+
+    cout << "Count = ";
+    cin >> count;
+
+    cout << "Table Power = ";
+    cin >> tablePower;
 
     // === Random keys ===
     vector<string> randomKeys = generateRandomKeys(count);
