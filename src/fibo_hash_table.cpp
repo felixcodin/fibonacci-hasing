@@ -19,16 +19,16 @@ void FiboHashTable::insert(const string &key, int value)
     int index = hash(key);
     for (auto &p : table[index])
     {
-        if (p.first == key);
+        if (p.first == key)
         {
             p.second = value;
             return;
         }
     }
     table[index].emplace_back(key, value);
-    numElement++;
+    numElements++;
 
-    if (static_cast<double>(numElement) / tableSize > LOAD_FACTOR)
+    if (static_cast<double>(numElements) / tableSize > LOAD_FACTOR)
         rehash();
 }
 
@@ -52,7 +52,7 @@ void FiboHashTable::remove(const string &key)
     auto &bucket = table[index];
     size_t before = bucket.size();
     bucket.remove_if([&](auto &p) { return p.first == key; });
-    numElement -= (before - bucket.size());
+    numElements -= (before - bucket.size());
 }
 
 void FiboHashTable::rehash()
@@ -60,7 +60,7 @@ void FiboHashTable::rehash()
     int oldTableSize = tableSize;
     tableSize *= 2;
     shift = 32 - __builtin_ctz(tableSize);
-    vector<list<pair<string, int>>> newTable;
+    vector<list<pair<string, int>>> newTable(tableSize);
 
     for (const auto &bucket : table)
     {
@@ -71,4 +71,36 @@ void FiboHashTable::rehash()
         }
     }
     table.swap(newTable);
+}
+
+int FiboHashTable::getElementCount() const
+{
+    return numElements;
+}
+
+double FiboHashTable::getLoadFactor() const
+{
+    return static_cast<double>(numElements) / tableSize;
+}
+
+double FiboHashTable::getAverageChainLength() const
+{
+    int nonEmpty = 0;
+    for (const auto &bucket : table)
+    {
+        if (!bucket.empty())
+            nonEmpty++;
+    }
+    return nonEmpty ? static_cast<double>(numElements) / nonEmpty : 0.0;
+}
+
+int FiboHashTable::getMaxChainLength() const
+{
+    int maxLen = 0;
+    for (const auto &bucket : table)
+    {
+        if (bucket.size() > maxLen)
+            maxLen = bucket.size();
+    }
+    return maxLen;
 }
