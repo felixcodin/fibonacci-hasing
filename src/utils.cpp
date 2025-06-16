@@ -3,7 +3,7 @@
 random_device rd;
 mt19937 gen(rd());
 
-vector<string> generateRandomKeys(int count, int length = 8)
+vector<string> generateRandomKeys(int count, int length)
 {
     uniform_int_distribution<> distrib('a', 'z');
     vector<string> keys;
