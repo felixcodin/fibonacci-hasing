@@ -18,6 +18,7 @@ double measureTime(Func func, Arg &&arg)
 }
 
 vector<string> generateRandomKeys(int count, int length = 8);
-vector<string> generateSequentialKeys(int count)
+vector<string> generateSequentialKeys(int count);
+vector<string> generateClusteredKeys(int count, int clusterSize);
 
 #endif
