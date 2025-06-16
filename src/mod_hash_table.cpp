@@ -25,9 +25,9 @@ void ModHashTable::insert(const string &key, int value)
         }
     }
     table[index].emplace_back(key, value);
-    numElement++;
+    numElements++;
     
-    if (static_cast<double>(numElement) / tableSize > LOAD_FACTOR)
+    if (static_cast<double>(numElements) / tableSize > LOAD_FACTOR)
         rehash();
 }
 
@@ -50,15 +50,15 @@ void ModHashTable::remove(const string &key)
     int index = hash(key);
     auto &bucket = table[index];
     size_t before = bucket.size();
-    bucket.remove_if(([&](auto &p) { return p.first == key; }));
-    numElement -= (before - bucket.size());
+    bucket.remove_if([&](auto &p) { return p.first == key; });
+    numElements -= (before - bucket.size());
 }
 
 void ModHashTable::rehash()
 {
     int oldTableSize = tableSize;
     tableSize *= 2;
-    vector<list<pair<string, int>>> newTable;
+    vector<list<pair<string, int>>> newTable(tableSize);
 
     for (const auto &bucket : table)
     {
@@ -69,4 +69,36 @@ void ModHashTable::rehash()
         }
     }
     table.swap(newTable);
+}
+
+int ModHashTable::getElementCount() const
+{
+    return numElements;
+}
+
+double ModHashTable::getLoadFactor() const
+{
+    return static_cast<double>(numElements) / tableSize;
+}
+
+double ModHashTable::getAverageChainLength() const
+{
+    int nonEmpty = 0;
+    for (const auto &bucket : table)
+    {
+        if (!bucket.empty())
+            nonEmpty++;
+    }
+    return nonEmpty ? static_cast<double>(numElements) / nonEmpty : 0.0;
+}
+
+int ModHashTable::getMaxChainLength() const
+{
+    int maxLen = 0;
+    for (const auto &bucket : table)
+    {
+        if (bucket.size() > maxLen)
+            maxLen = bucket.size();
+    }
+    return maxLen;
 }

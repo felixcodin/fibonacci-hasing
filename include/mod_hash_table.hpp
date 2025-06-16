@@ -15,10 +15,16 @@ public:
 
 private:
     int tableSize;
-    int numElement = 0;
+    int numElements = 0;
     static constexpr double LOAD_FACTOR = 0.75;
     vector<list<pair<string, int>>> table;
     unsigned int hash(const string &key) const;
+
+    int getElementCount() const override;
+    double getLoadFactor() const override;
+    double getAverageChainLength() const override;
+    int getMaxChainLength() const override;
+
     void rehash();
 
 };
